@@ -1,20 +1,8 @@
 package com.example.textrecognition;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import java.io.IOException;
-import java.util.ArrayList;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,20 +17,25 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import java.lang.String;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,15 +46,15 @@ public class MainActivity extends AppCompatActivity {
     private ShapeableImageView imageIv;
     private EditText recognizedTextEt;
 
-    private static final string TAG ="MAIN_TAB";
+    private static final String TAG = "MAIN_TAB";
 
     private Uri imageUri = null;
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 101;
 
-    private string[] cameraPermissions;
-    private string[] storagePermissions;
+    private String[] cameraPermissions;
+    private String[] storagePermissions;
 
     private ProgressDialog progressDialog;
 
@@ -78,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
         imageIv = findViewById(R.id.imageIv);
         recognizedTextEt = findViewById(R.id.recognizedTextEt);
 
-        cameraPermissions = new string[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        storagePermissions = new string[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please Wait");
@@ -87,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
-        inputImageBtn.OnClickListener(new View.OnClickListener() {
+        inputImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -118,13 +111,13 @@ public class MainActivity extends AppCompatActivity {
 
             progressDialog.setTitle("Recognizing text...");
 
-            Task<Text> textTaskResult = textRecognizer.process(inputImage)
-                    .addOnCanceledListener(new OnSuccessListener<Text>(){
+            Task<Text> textTask = textRecognizer.process(inputImage)
+                    .addOnSuccessListener(new OnSuccessListener<Text>(){
                         @Override
                         public void onSuccess(Text text){
 
                             progressDialog.dismiss();
-                            string recognizedText = text.getText();
+                            String recognizedText = text.getText();
                             Log.d(TAG, "onSuccess: recognizedText: "+recognizedText);
 
 
@@ -150,10 +143,12 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showInputImageDialog() {
 
-        PopupMenu popupMenu = new popupMenu(this, inputImageBtn);
+        PopupMenu popupMenu = new PopupMenu(this, inputImageBtn);
 
         popupMenu.getMenu().add(Menu.NONE, 1 , 1 ,"CAMERA");
         popupMenu.getMenu().add(Menu.NONE, 2 , 2 ,"GALLERY");
+
+        popupMenu.show();
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -189,8 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
     private void pickImageGallery() {
         Log.d(TAG, "pickImageGallery: ");
